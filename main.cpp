@@ -36,7 +36,6 @@ int slave()
     while (true){
         if (device.receive()){
             int cmd = device.read(); // Read byte from master
-            printf("Device: .\n");
             uint8_t a = cmd >> 8;
             uint8_t b = cmd & 0xff;
             if (b == PUTC){
@@ -45,8 +44,15 @@ int slave()
                 b = cmd & 0xff;
                 lcd.putc(b);
                 printf("Device: putc(%c).\n", b);
-            }else{
-                
+            }else if(b == LOCATE){
+                int cmd = device.read(); // Read byte from master
+                a = cmd >> 8;
+                b = cmd & 0xff;
+                lcd.locate(a, b);
+                printf("Device: locate(%d, %d).\n", a, b);
+            }else if(b == CLS){
+                lcd.cls();
+                printf("Device: cls().\n");
             }
         }
     }
